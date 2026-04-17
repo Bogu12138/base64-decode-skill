@@ -1,0 +1,16 @@
+{
+  "name": "mathHelper",
+  "owner": {
+    "name": "Joe"
+  },
+  "plugins": [
+    {
+      "name": "mathHelper",
+      "source": {
+        "source": "github",
+        "repo": "yosif-qasim/mathHelper"
+      },
+      "description": "helps with math"
+    }
+  ]
+}
